@@ -1,7 +1,15 @@
-import { useState } from "react"
-import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword } from "../../utils/firebase/firebase.utils"
+import { useContext, useState } from "react"
+
 import FormInput from "../form-input/form-input.component"
 import Button from "../button/button.component"
+import { UserContext } from "../../context/user.context"
+
+import {
+    createUserDocumentFromAuth,
+    signInAuthUserWithEmailAndPassword,
+    signInWithGooglePopup,
+} from "../../utils/firebase/firebase.utils"
+
 import './sign-in-form.styles.scss'
 
 const defalutFormFields = {
@@ -13,9 +21,13 @@ export default function SignInForm() {
     const [formField, setFormField] = useState(defalutFormFields)
     const { email, password } = formField
 
-    function resetFormFields(){
+    function resetFormFields() {
         setFormField(defalutFormFields)
     }
+
+    async function signInWithGoogle() {
+        await signInWithGooglePopup();
+    };
 
     function handleChange(event) {
         const { name, value } = event.target
@@ -26,11 +38,10 @@ export default function SignInForm() {
         event.preventDefault()
 
         try {
-            const response = await signInAuthUserWithEmailAndPassword(email, password)
-            console.log(response)
+            await signInAuthUserWithEmailAndPassword(email, password)
             resetFormFields()
         } catch (error) {
-            if(error.code === 'auth/invalid-credential'){
+            if (error.code === 'auth/invalid-credential') {
                 alert('email or password incorrect')
             }
             console.log(error)
@@ -60,7 +71,7 @@ export default function SignInForm() {
                 />
                 <div className="buttons-container">
                     <Button type="submit">Sign In</Button>
-                    <Button buttonType="google">Google sign in</Button>
+                    <Button buttonType="google" type='button' onClick={signInWithGoogle}>Google sign in</Button>
                 </div>
             </form>
         </div>

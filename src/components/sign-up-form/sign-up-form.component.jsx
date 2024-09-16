@@ -20,6 +20,10 @@ export default function SignUpForm() {
         setFormField({ ...formField, [name]: value })
     }
 
+    function resetFormFields(){
+        setFormField(defalutFormFields)
+    }
+
     async function handleSubmit(event) {
         event.preventDefault()
         if (password !== confirmPassword) {
@@ -32,8 +36,9 @@ export default function SignUpForm() {
                 email,
                 password
             )
-            await createUserDocumentFromAuth(user, { displayName })
 
+            await createUserDocumentFromAuth(user, { displayName })
+            resetFormFields()
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 alert('Cannot create user, email already in use')
